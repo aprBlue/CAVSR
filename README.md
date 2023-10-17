@@ -22,7 +22,7 @@ In this paper, we propose a novel and practical compression-aware video super-re
   ```
 
 ### Evaluation
-1. Copy the dataset and checkpoints to the workplace. 
+1. Copy the [dataset](https://github.com/aprBlue/CAVSR/releases/download/init/dataset.zip) and [checkpoints](https://github.com/aprBlue/CAVSR/releases/download/init/ckpt.zip) to the workplace. 
 2. Run scripts:
     ```bash
     python basicsr/test.py   -opt script/test_sota.yml
