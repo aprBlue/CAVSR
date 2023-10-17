@@ -1,0 +1,154 @@
+# general settings
+name: train_vimeo90k
+model_type: VideoMetaRecurrentModel
+scale: 4
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: Vimeo90K
+    type: Vimeo90KMetaRecurrentDataset
+    dataroot_gt: datasets/Vimeo/gt
+    dataroot_lq: datasets/Vimeo/lq
+    lq_subroot:  [BD, BD, BD, BD_15, BD_25, BD_35]
+    dataroot_meta: datasets/Vimeo/lq/meta
+    meta_subroot: [0,0,0,15,25,35]
+    meta_info_file: basicsr/data/meta_info/meta_info_Vimeo90K_train_GT.txt
+    io_backend:
+      type: disk
+
+    num_frame: -1
+    gt_size: 256
+    interval_list: [1]
+    random_reverse: false
+    use_hflip: true
+    use_rot: true
+    flip_sequence: false # true
+
+    # data loader
+    num_worker_per_gpu: 16
+    batch_size_per_gpu: 8
+    dataset_enlarge_ratio: 200
+    prefetch_mode: ~
+
+  val_0:
+    name: Vid4
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/Vid4/gt
+    dataroot_lq: datasets/Vid4/lq/BD
+    dataroot_meta: datasets/Vid4/lq/meta/0
+
+    cache_data: True
+    io_backend:
+      type: disk
+
+    num_frame: -1  # not needed
+  val_15:
+    name: Vid4_crf15
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/Vid4/gt
+    dataroot_lq: datasets/Vid4/lq/BD_15
+    dataroot_meta: datasets/Vid4/lq/meta/15
+
+
+    cache_data: True
+    io_backend:
+      type: disk
+
+    num_frame: -1  # not needed
+  val_25:
+    name: Vid4_crf25
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/Vid4/gt
+    dataroot_lq: datasets/Vid4/lq/BD_25
+    dataroot_meta: datasets/Vid4/lq/meta/25
+
+
+    cache_data: True
+    io_backend:
+      type: disk
+
+    num_frame: -1  # not needed
+  val_35:
+    name: Vid4_crf35
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/Vid4/gt
+    dataroot_lq: datasets/Vid4/lq/BD_35
+    dataroot_meta: datasets/Vid4/lq/meta/35
+
+    cache_data: True
+    io_backend:
+      type: disk
+
+    num_frame: -1  # not needed
+
+# network structures
+network_g:
+  type: CAVSR
+  num_block: 25
+
+# path
+path:
+  pretrain_network_g: ~
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 2e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: CosineAnnealingRestartLR
+    periods: [400000]
+    restart_weights: [1]
+    eta_min: !!float 1e-7
+
+  total_iter: 100000
+  warmup_iter: -1  # no warm up
+  fix_flow: 5000
+  flow_lr_mul: 0.125
+
+  # losses
+  pixel_opt:
+    type: bi_SD_CharbonnierLoss
+    loss_weight: [0.5, 0.25, 0.25]
+    reduction: mean
+
+# validation settings
+val:
+  val_freq: !!float 2e3
+  save_img: false
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: true
+    ssim: # metric name, can be arbitrary
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: true
+
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 2e3
+  use_tb_logger: true
+  wandb:
+    project: vsr_best
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500
+
+find_unused_parameters: true

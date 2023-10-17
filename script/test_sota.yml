@@ -1,0 +1,69 @@
+# general settings
+name: Vid4_meta
+model_type: VideoMetaRecurrentModel
+scale: 4
+num_gpu: 2  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+# dataset and data loader settings
+datasets:
+  test_15:    
+    name: Vid4_crf15
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/vid4/GT
+    dataroot_lq: datasets/vid4/BD_15
+    dataroot_meta: datasets/vid4/meta/15
+    cache_data: True
+    io_backend:
+      type: disk
+    num_frame: -1  # not needed
+
+  test_25:    
+    name: Vid4_crf25
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/vid4/GT
+    dataroot_lq: datasets/vid4/BD_25
+    dataroot_meta: datasets/vid4/meta/25
+    cache_data: True
+    io_backend:
+      type: disk
+    num_frame: -1  # not needed
+
+  test_35:    
+    name: Vid4_crf35
+    type: VideoMetaRecurrentTestDataset
+    dataroot_gt: datasets/vid4/GT
+    dataroot_lq: datasets/vid4/BD_35
+    dataroot_meta: datasets/vid4/meta/35
+    cache_data: True
+    io_backend:
+      type: disk
+    num_frame: -1  # not needed
+
+# network structures
+network_g:
+  type: CAVSR
+  num_block: 25
+
+
+# path
+path:
+  pretrain_network_g: ckpt/last.pth
+  strict_load_g: true
+
+# validation settings
+val:
+  save_img: false
+  flip_seq: false
+  center_frame_only: false
+  suffix: ~  # add suffix to saved images, if None, use exp name
+
+  metrics:
+    psnr: # metric name, can be arbitrary
+      type: calculate_psnr
+      crop_border: 0
+      test_y_channel: true
+    ssim:
+      type: calculate_ssim
+      crop_border: 0
+      test_y_channel: true
