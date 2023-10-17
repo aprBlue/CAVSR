@@ -1,6 +1,6 @@
 # CAVSR: Compression-Aware Video Super-Resolution [CVPR 2023]
 
-[[Paper](http://arxiv.org/abs/2205.09753)] 
+[[Paper](https://openaccess.thecvf.com/content/CVPR2023/papers/Wang_Compression-Aware_Video_Super-Resolution_CVPR_2023_paper.pdf)] 
 [[Poster](.doc/poster.pdf)] 
 [[Video](https://youtu.be/5XXwcUcGAqY)]
 [[PPT](.doc/PPT.pdf)]
