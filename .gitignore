@@ -26,6 +26,7 @@ version.py
 !script/weights/model_50000.pth
 !script/weights/deg_encoder.pth
 !script/weights/ibp_encoder.pth
+!ranker.pth
 
 *.zip
 
